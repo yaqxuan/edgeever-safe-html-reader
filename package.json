@@ -1,6 +1,6 @@
 {
   "name": "edgeever-safe-html-reader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A safe Markdown and allowlisted HTML reading view for EdgeEver.",
   "type": "module",
   "private": true,

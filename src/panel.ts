@@ -135,7 +135,11 @@ export class SafeHtmlReaderPanel {
     if (this.interval !== null) window.clearInterval(this.interval);
     this.refreshButton.removeEventListener("click", this.onRefresh);
     this.renderResult?.dispose();
-    this.container.replaceChildren();
+    // Only remove the node owned by this panel instance. EdgeEver can mount a
+    // replacement panel before an older async disposer runs (notably under
+    // React Strict Mode); clearing the shared container here would erase the
+    // newly mounted panel and leave an unexplained empty dialog.
+    this.root.remove();
   }
 
   private async readSnapshot(document: EdgeEverEditorDocument): Promise<ReaderSnapshot> {

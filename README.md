@@ -99,7 +99,7 @@ The same three files are kept at the repository root so EdgeEver can also instal
 
 ### 4. Create a GitHub Release
 
-Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.2` or `v1.0.2`, and upload these three files as separate release assets:
+Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.3` or `v1.0.3`, and upload these three files as separate release assets:
 
 ```text
 dist/manifest.json  -> manifest.json
@@ -110,11 +110,11 @@ dist/styles.css     -> styles.css
 With GitHub CLI:
 
 ```sh
-gh release create v1.0.2 \
+gh release create v1.0.3 \
   dist/manifest.json \
   dist/main.js \
   dist/styles.css \
-  --title "Safe HTML Reader v1.0.2" \
+  --title "Safe HTML Reader v1.0.3" \
   --notes-file RELEASE.md
 ```
 

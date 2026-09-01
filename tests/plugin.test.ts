@@ -113,4 +113,27 @@ describe("Safe HTML Reader plugin", () => {
     if (typeof disposePanel === "function") disposePanel();
     if (typeof disposePlugin === "function") disposePlugin();
   });
+
+  it("does not let a stale panel disposer erase a replacement mount", async () => {
+    const harness = createContext(true, true);
+    const disposePlugin = await createSafeHtmlReaderPlugin().activate(harness.context);
+    const container = document.createElement("div");
+    document.body.append(container);
+
+    const disposeFirst = await harness.getPanel()?.mount(container);
+    const firstRoot = container.firstElementChild;
+    const disposeSecond = await harness.getPanel()?.mount(container);
+    const secondRoot = container.firstElementChild;
+
+    expect(firstRoot).not.toBe(secondRoot);
+    if (typeof disposeFirst === "function") disposeFirst();
+    expect(container.firstElementChild).toBe(secondRoot);
+
+    await vi.waitFor(() => {
+      expect(container.querySelector("h1")?.textContent).toBe("Legacy Saved");
+    });
+
+    if (typeof disposeSecond === "function") disposeSecond();
+    if (typeof disposePlugin === "function") disposePlugin();
+  });
 });
