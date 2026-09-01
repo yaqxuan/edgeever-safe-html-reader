@@ -94,6 +94,8 @@ dist/styles.css
 
 `main.js` is a browser ESM single-file bundle with no relative runtime imports. The build also verifies EdgeEver's 5 MB JavaScript and 1 MB stylesheet limits.
 
+The same three files are kept at the repository root so EdgeEver can also install the plugin from a manifest URL if GitHub's Release asset API is temporarily unavailable or rate limited.
+
 ### 4. Create a GitHub Release
 
 Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.0` or `v1.0.0`, and upload these three files as separate release assets:
@@ -126,6 +128,14 @@ The release `manifest.json` must be byte-for-byte identical to the root manifest
    ```text
    https://github.com/yaqxuan/edgeever-safe-html-reader
    ```
+
+   If EdgeEver reports `GitHub asset manifest.json failed with HTTP 403`, use this manifest URL instead:
+
+   ```text
+   https://cdn.jsdelivr.net/gh/yaqxuan/edgeever-safe-html-reader@main/manifest.json
+   ```
+
+   This downloads the same checked-in package without using GitHub's Release asset API.
 
 4. Review the five read-only/UI permissions.
 5. Install and enable the plugin.

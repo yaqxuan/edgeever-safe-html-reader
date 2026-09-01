@@ -1,4 +1,5 @@
 import { readFile, stat } from "node:fs/promises";
+import { isDeepStrictEqual } from "node:util";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -7,6 +8,7 @@ const required = ["manifest.json", "main.js", "styles.css"];
 
 for (const name of required) {
   await stat(resolve(dist, name));
+  await stat(resolve(root, name));
 }
 
 const manifest = JSON.parse(await readFile(resolve(dist, "manifest.json"), "utf8"));
@@ -26,4 +28,14 @@ if (/\b(?:import|export)\s+(?:[^'\"]*?from\s*)?['\"]\.\.?\//.test(mainJs) || /im
 if (mainSize > 5 * 1024 * 1024) throw new Error("main.js exceeds EdgeEver's 5 MB limit.");
 if (stylesSize > 1024 * 1024) throw new Error("styles.css exceeds EdgeEver's 1 MB limit.");
 
-console.log(`Verified dist: main.js ${mainSize} bytes, styles.css ${stylesSize} bytes.`);
+for (const name of required) {
+  const [publishedFile, distributionFile] = await Promise.all([
+    readFile(resolve(root, name)),
+    readFile(resolve(dist, name)),
+  ]);
+  if (!isDeepStrictEqual(publishedFile, distributionFile)) {
+    throw new Error(`${name} differs between the repository root and dist/.`);
+  }
+}
+
+console.log(`Verified dist and manifest-URL package: main.js ${mainSize} bytes, styles.css ${stylesSize} bytes.`);

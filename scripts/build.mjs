@@ -34,3 +34,11 @@ await Promise.all([
   copyFile(resolve(root, "manifest.json"), resolve(dist, "manifest.json")),
   copyFile(resolve(root, "src/styles.css"), resolve(dist, "styles.css")),
 ]);
+
+// Keep a browser-installable copy on the default branch. EdgeEver can install
+// this package from a manifest URL when GitHub's Release asset API is rate
+// limited for a shared Cloudflare Worker address.
+await Promise.all([
+  copyFile(resolve(dist, "main.js"), resolve(root, "main.js")),
+  copyFile(resolve(dist, "styles.css"), resolve(root, "styles.css")),
+]);
