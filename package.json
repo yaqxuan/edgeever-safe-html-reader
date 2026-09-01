@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs && node scripts/verify-dist.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:browser": "npm run build && node scripts/browser-e2e.mjs",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run test && npm run build"
   },
