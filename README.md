@@ -17,7 +17,8 @@ It uses only these official capabilities:
 
 - `context.commands.register()`
 - `context.ui.panels.register()` on all supported versions and `context.ui.panels.open()` when available
-- `context.editor.getSelection()` on EdgeEver v1.51.1 or `context.editor.getDocument()` on newer builds for the live Markdown
+- `context.editor.getSelection()` plus `context.notes.get()` on EdgeEver v1.51.1 for the active note's saved Markdown
+- `context.editor.getDocument()` on newer builds for the live Markdown, including unsaved changes
 - `context.notes.get()` for the saved note title
 - `context.ui.showNotice()` for a missing active note
 
@@ -98,7 +99,7 @@ The same three files are kept at the repository root so EdgeEver can also instal
 
 ### 4. Create a GitHub Release
 
-Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.1` or `v1.0.1`, and upload these three files as separate release assets:
+Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.2` or `v1.0.2`, and upload these three files as separate release assets:
 
 ```text
 dist/manifest.json  -> manifest.json
@@ -109,11 +110,11 @@ dist/styles.css     -> styles.css
 With GitHub CLI:
 
 ```sh
-gh release create v1.0.1 \
+gh release create v1.0.2 \
   dist/manifest.json \
   dist/main.js \
   dist/styles.css \
-  --title "Safe HTML Reader v1.0.1" \
+  --title "Safe HTML Reader v1.0.2" \
   --notes-file RELEASE.md
 ```
 

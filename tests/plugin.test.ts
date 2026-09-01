@@ -14,12 +14,16 @@ const createContext = (hasDocument = true, legacy = false) => {
   const context: EdgeEverPluginContext = {
     pluginId: "io.github.yaqxuan.safe-html-reader",
     notes: {
-      get: vi.fn(async () => ({ id: "note-1", title: "Example", contentMarkdown: "Saved" })),
+      get: vi.fn(async () => ({
+        id: "note-1",
+        title: "Example",
+        contentMarkdown: legacy ? "# Legacy Saved\n\n<mark>Whole note</mark>" : "Saved",
+      })),
     },
     editor: legacy
       ? {
           getSelection: vi.fn(async () => hasDocument
-            ? { noteId: "note-1", contentMarkdown: "# Legacy Live\n\n<mark>Current</mark>" }
+            ? { noteId: "note-1", contentMarkdown: "" }
             : null),
         }
       : {
@@ -101,8 +105,9 @@ describe("Safe HTML Reader plugin", () => {
     const disposePanel = await harness.getPanel()?.mount(container);
 
     await vi.waitFor(() => {
-      expect(container.querySelector("h1")?.textContent).toBe("Legacy Live");
-      expect(container.textContent).toContain("正在显示当前编辑器 Markdown");
+      expect(container.querySelector("h1")?.textContent).toBe("Legacy Saved");
+      expect(container.querySelector("mark")?.textContent).toBe("Whole note");
+      expect(container.textContent).toContain("正在显示当前笔记的最新 Markdown");
     });
 
     if (typeof disposePanel === "function") disposePanel();

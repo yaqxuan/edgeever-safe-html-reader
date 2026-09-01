@@ -65,9 +65,17 @@ export const getCurrentEditorDocument = async (
   }
   if (typeof context.editor.getSelection === "function") {
     const selection = await context.editor.getSelection();
-    return selection
-      ? { noteId: selection.noteId, contentMarkdown: selection.contentMarkdown }
-      : null;
+    if (!selection) return null;
+    // EdgeEver v1.51.1 names this field contentMarkdown, but it contains only
+    // the selected fragment (and is empty when the caret has no selection).
+    // Use the selection only to identify the active note, then read the full
+    // saved Markdown through the read-only notes API.
+    const note = await context.notes.get(selection.noteId);
+    return {
+      noteId: selection.noteId,
+      contentMarkdown: note.contentMarkdown,
+      hasUnsavedChanges: false,
+    };
   }
   throw new Error("当前 EdgeEver 版本没有提供可读取笔记内容的编辑器接口。");
 };

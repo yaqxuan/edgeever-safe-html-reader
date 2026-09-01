@@ -2,7 +2,7 @@
   "type": "plugin",
   "id": "io.github.yaqxuan.safe-html-reader",
   "name": "Safe HTML Reader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "apiVersion": "1",
   "description": "Safely renders Markdown with a small allowlist of portable HTML for focused reading.",
   "author": "yaqxuan",
