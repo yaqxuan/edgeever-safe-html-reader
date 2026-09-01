@@ -91,31 +91,29 @@ describe("Safe HTML Reader plugin", () => {
     const dispose = await createSafeHtmlReaderPlugin().activate(harness.context);
     await harness.getCommand()?.run();
     expect(harness.notices[0]).toContain("请先打开一篇笔记");
-    expect(harness.context.ui.panels.open).toHaveBeenCalled();
+    expect(harness.context.ui.panels.open).not.toHaveBeenCalled();
     if (typeof dispose === "function") dispose();
   });
 
   it("supports EdgeEver v1.51.1 through getSelection and the panel menu", async () => {
     const harness = createContext(true, true);
     const disposePlugin = await createSafeHtmlReaderPlugin().activate(harness.context);
-    expect(harness.getCommand()).toBeNull();
-
-    const container = document.createElement("div");
-    document.body.append(container);
-    const disposePanel = await harness.getPanel()?.mount(container);
+    expect(harness.getPanel()).toBeNull();
+    expect(harness.getCommand()?.title).toBe("Open Safe HTML Reading View");
+    await harness.getCommand()?.run();
 
     await vi.waitFor(() => {
-      expect(container.querySelector("h1")?.textContent).toBe("Legacy Saved");
-      expect(container.querySelector("mark")?.textContent).toBe("Whole note");
-      expect(container.textContent).toContain("正在显示当前笔记的最新 Markdown");
+      expect(document.querySelector(".shr-legacy-dialog h1")?.textContent).toBe("Legacy Saved");
+      expect(document.querySelector(".shr-legacy-dialog mark")?.textContent).toBe("Whole note");
+      expect(document.querySelector(".shr-legacy-dialog")?.textContent).toContain("正在显示当前笔记的最新 Markdown");
     });
 
-    if (typeof disposePanel === "function") disposePanel();
     if (typeof disposePlugin === "function") disposePlugin();
+    expect(document.querySelector(".shr-legacy-dialog")).toBeNull();
   });
 
   it("does not let a stale panel disposer erase a replacement mount", async () => {
-    const harness = createContext(true, true);
+    const harness = createContext(true, false);
     const disposePlugin = await createSafeHtmlReaderPlugin().activate(harness.context);
     const container = document.createElement("div");
     document.body.append(container);
@@ -130,7 +128,7 @@ describe("Safe HTML Reader plugin", () => {
     expect(container.firstElementChild).toBe(secondRoot);
 
     await vi.waitFor(() => {
-      expect(container.querySelector("h1")?.textContent).toBe("Legacy Saved");
+      expect(container.querySelector("h1")?.textContent).toBe("Live");
     });
 
     if (typeof disposeSecond === "function") disposeSecond();

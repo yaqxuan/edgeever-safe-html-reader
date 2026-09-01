@@ -57,22 +57,13 @@ const assert = (condition, message) => {
 
 const run = async () => {
   await plugin.activate(context);
-  assert(commands.length === 0, "v1.51.1 must not register the unsupported open-panel command");
-  assert(panels.length === 1, "plugin panel was not registered");
-
-  const container = document.querySelector("#plugin-panel");
-  const disposeFirst = await panels[0].mount(container);
-  const firstRoot = container.firstElementChild;
-  const disposeSecond = await panels[0].mount(container);
-  const secondRoot = container.firstElementChild;
-  assert(firstRoot !== secondRoot, "replacement panel was not mounted");
-
-  // Reproduce EdgeEver's delayed Strict Mode cleanup: the stale disposer runs
-  // only after the replacement has already mounted.
-  disposeFirst?.();
-  assert(container.firstElementChild === secondRoot, "stale disposer erased the replacement panel");
+  assert(commands.length === 1, "v1.51.1 fallback command was not registered");
+  assert(panels.length === 0, "broken v1.51.1 host panel should be bypassed");
+  await commands[0].run();
 
   await new Promise((resolve) => setTimeout(resolve, 250));
+  const container = document.querySelector(".shr-legacy-dialog-content");
+  assert(container, "legacy reading dialog was not opened");
   assert(container.querySelector("h1")?.textContent === "浏览器自测文章", "full saved note was not rendered");
   assert(container.querySelector("abbr strong")?.textContent === "staggering", "abbr vocabulary markup was not rendered");
   assert(container.querySelector("sup[data-shr-reference]")?.textContent === "[1]", "reference was not enhanced");
@@ -85,7 +76,7 @@ const run = async () => {
     heading: container.querySelector("h1")?.textContent,
     vocabulary: container.querySelector("abbr strong")?.textContent,
     reference: container.querySelector("sup[data-shr-reference]")?.textContent,
-    staleDisposerSafe: container.firstElementChild === secondRoot,
+    legacyDialogOpened: Boolean(document.querySelector(".shr-legacy-dialog")),
     unsafeAttributeRemoved: !container.querySelector("[onerror]"),
   };
   document.documentElement.dataset.passed = "true";

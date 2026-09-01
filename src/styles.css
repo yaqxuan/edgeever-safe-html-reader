@@ -16,6 +16,82 @@
   font-family: inherit;
 }
 
+.shr-legacy-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 48%);
+  backdrop-filter: blur(3px);
+}
+
+.shr-legacy-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(56rem, calc(100vw - 2rem));
+  max-height: min(52rem, calc(100vh - 2rem));
+  overflow: hidden;
+  border: 1px solid #dce5df;
+  border-radius: 0.85rem;
+  background: #ffffff;
+  box-shadow: 0 24px 64px rgb(15 23 42 / 30%);
+}
+
+.shr-legacy-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #dce5df;
+}
+
+.shr-legacy-dialog-header h2 {
+  margin: 0;
+  color: #17211c;
+  font-size: 1rem;
+}
+
+.shr-legacy-dialog-close {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #dce5df;
+  border-radius: 0.5rem;
+  color: #17211c;
+  background: #f8fafc;
+  font: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.shr-legacy-dialog-content {
+  min-height: 20rem;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.dark .shr-legacy-dialog {
+  border-color: #314039;
+  background: #101713;
+}
+
+.dark .shr-legacy-dialog-header {
+  border-color: #314039;
+}
+
+.dark .shr-legacy-dialog-header h2,
+.dark .shr-legacy-dialog-close {
+  color: #e7efe9;
+}
+
+.dark .shr-legacy-dialog-close {
+  border-color: #314039;
+  background: #18221d;
+}
+
 .dark .safe-html-reader-root {
   --shr-bg: #101713;
   --shr-surface: #18221d;
