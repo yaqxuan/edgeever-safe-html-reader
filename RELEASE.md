@@ -1,12 +1,13 @@
-# Safe HTML Reader v1.0.3
+# Safe HTML Reader v1.0.4
 
-Fix an empty-panel race on EdgeEver v1.51.1 while retaining support for newer Plugin API v1 builds.
+Recovery release for installations whose moving-branch CDN manifest cached an older JavaScript bundle under a newer version number.
 
 ## Highlights
 
 - Uses `getSelection()` only to identify the active note on EdgeEver v1.51.1, then reads its complete saved Markdown through `notes.get()`.
 - Uses `getDocument()` on newer builds to include unsaved editor changes.
 - Removes only the panel instance's own DOM root during cleanup, so a delayed Strict Mode disposer cannot erase a replacement mount.
+- Provides an immutable v1.0.4 manifest URL so the manifest, JavaScript, and stylesheet always come from the same release tag.
 - Uses the panel menu directly on v1.51.1 and keeps the **Open Safe HTML Reading View** command where programmatic panel opening is supported.
 - Renders standard Markdown plus a strict allowlist of portable HTML.
 - Provides accessible hover, keyboard-focus, and tap tooltips for `<abbr title="…">` vocabulary.
@@ -24,7 +25,7 @@ Upload the following files from `dist/` as separate GitHub Release assets:
 - `main.js`
 - `styles.css`
 
-The release tag must be `1.0.3` or `v1.0.3`. The release manifest must exactly match the `manifest.json` on the repository default branch.
+The release tag must be `1.0.4` or `v1.0.4`. The release manifest must exactly match the `manifest.json` on the repository default branch.
 
 ## Validation
 
