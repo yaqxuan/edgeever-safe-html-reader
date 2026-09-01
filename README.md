@@ -133,10 +133,10 @@ The release `manifest.json` must be byte-for-byte identical to the root manifest
    If EdgeEver reports `GitHub asset manifest.json failed with HTTP 403`, use this manifest URL instead:
 
    ```text
-   https://cdn.jsdelivr.net/gh/yaqxuan/edgeever-safe-html-reader@main/manifest.json
+   https://cdn.jsdelivr.net/gh/yaqxuan/edgeever-safe-html-reader@v1.0.3/manifest.json
    ```
 
-   This downloads the same checked-in package without using GitHub's Release asset API.
+   This downloads the immutable v1.0.3 package without using GitHub's Release asset API. A release tag is used instead of the moving `main` branch so the manifest, JavaScript, and stylesheet cannot come from different CDN cache generations.
 
 4. Review the five read-only/UI permissions.
 5. Install and enable the plugin.
