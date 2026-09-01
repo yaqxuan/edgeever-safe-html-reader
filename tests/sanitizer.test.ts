@@ -50,6 +50,22 @@ describe("markdownToSafeFragment", () => {
     expect(container.textContent).toContain("readable text");
   });
 
+  it("restores only allowlisted HTML escaped by the legacy rich editor", async () => {
+    const container = await render(`
+Backslash \\<sup>[1]\\</sup>
+
+Entity &lt;abbr title=&quot;令人震惊的；惊人的&quot;&gt;&lt;strong&gt;staggering&lt;/strong&gt;&lt;/abbr&gt;
+
+Blocked &lt;script&gt;window.pwned = true&lt;/script&gt;
+`);
+
+    expect(container.querySelector("sup")?.textContent).toBe("[1]");
+    expect(container.querySelector("abbr")?.getAttribute("title")).toBe("令人震惊的；惊人的");
+    expect(container.querySelector("abbr strong")?.textContent).toBe("staggering");
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.textContent).toContain("<script>");
+  });
+
   it("preserves safe links and blocks unsafe image schemes", async () => {
     const container = await render(`
 [safe](https://example.com/page)

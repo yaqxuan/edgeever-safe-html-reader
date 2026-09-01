@@ -2,9 +2,9 @@ import plugin from "/main.js";
 
 const noteMarkdown = `# 浏览器自测文章
 
-This result was <abbr title="令人震惊的；惊人的"><strong>staggering</strong></abbr>.
+This result was \\<abbr title="令人震惊的；惊人的">\\<strong>staggering\\</strong>\\</abbr>.
 
-这是一个重要背景。<sup>[1]</sup>
+这是一个重要背景。\\<sup>[1]\\</sup>
 
 ### [1] 自测注释
 

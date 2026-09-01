@@ -99,7 +99,7 @@ The same three files are kept at the repository root so EdgeEver can also instal
 
 ### 4. Create a GitHub Release
 
-Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.5` or `v1.0.5`, and upload these three files as separate release assets:
+Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.6` or `v1.0.6`, and upload these three files as separate release assets:
 
 ```text
 dist/manifest.json  -> manifest.json
@@ -110,11 +110,11 @@ dist/styles.css     -> styles.css
 With GitHub CLI:
 
 ```sh
-gh release create v1.0.5 \
+gh release create v1.0.6 \
   dist/manifest.json \
   dist/main.js \
   dist/styles.css \
-  --title "Safe HTML Reader v1.0.5" \
+  --title "Safe HTML Reader v1.0.6" \
   --notes-file RELEASE.md
 ```
 
@@ -133,10 +133,10 @@ The release `manifest.json` must be byte-for-byte identical to the root manifest
    If EdgeEver reports `GitHub asset manifest.json failed with HTTP 403`, use this manifest URL instead:
 
    ```text
-   https://cdn.jsdelivr.net/gh/yaqxuan/edgeever-safe-html-reader@v1.0.5/manifest.json
+   https://cdn.jsdelivr.net/gh/yaqxuan/edgeever-safe-html-reader@v1.0.6/manifest.json
    ```
 
-   This downloads the immutable v1.0.5 package without using GitHub's Release asset API. A release tag is used instead of the moving `main` branch so the manifest, JavaScript, and stylesheet cannot come from different CDN cache generations.
+   This downloads the immutable v1.0.6 package without using GitHub's Release asset API. A release tag is used instead of the moving `main` branch so the manifest, JavaScript, and stylesheet cannot come from different CDN cache generations.
 
 4. Review the five read-only/UI permissions.
 5. Install and enable the plugin.

@@ -51,6 +51,38 @@ const ALLOWED_ATTRIBUTES_BY_TAG: Readonly<Record<string, ReadonlySet<string>>> =
 
 const URL_BASE = "https://edgeever.invalid/";
 const DATA_IMAGE_PATTERN = /^data:image\/(?:avif|gif|jpeg|png|webp);base64,[a-z0-9+/=\s]+$/i;
+const PORTABLE_LITERAL_TAGS = [
+  "abbr",
+  "del",
+  "details",
+  "em",
+  "kbd",
+  "mark",
+  "strong",
+  "sub",
+  "summary",
+  "sup",
+  "u",
+] as const;
+const PORTABLE_TAG_NAMES = PORTABLE_LITERAL_TAGS.join("|");
+const BACKSLASH_ESCAPED_PORTABLE_TAG = new RegExp(
+  `\\\\(<\\/?(?:${PORTABLE_TAG_NAMES})(?:\\s+[^<>\\n]*?)?>)`,
+  "gi",
+);
+const ENTITY_ESCAPED_PORTABLE_TAG = new RegExp(
+  `&lt;(\\/?)(?:(${PORTABLE_TAG_NAMES}))((?:\\s+[^<>\\n]*?)?)&gt;`,
+  "gi",
+);
+
+export const restorePortableHtmlLiterals = (markdown: string) => markdown
+  .replace(BACKSLASH_ESCAPED_PORTABLE_TAG, "$1")
+  .replace(ENTITY_ESCAPED_PORTABLE_TAG, (_match, slash: string, tag: string, attributes: string) => {
+    const decodedAttributes = attributes
+      .replace(/&quot;/gi, '"')
+      .replace(/&#(?:39|x27);/gi, "'")
+      .replace(/&amp;/gi, "&");
+    return `<${slash}${tag}${decodedAttributes}>`;
+  });
 
 const isSafeLink = (value: string) => {
   try {
@@ -100,7 +132,7 @@ const enforcePerTagAttributes = (fragment: DocumentFragment) => {
 };
 
 export const markdownToSafeFragment = async (markdown: string): Promise<DocumentFragment> => {
-  const dirtyHtml = await marked.parse(markdown, {
+  const dirtyHtml = await marked.parse(restorePortableHtmlLiterals(markdown), {
     async: false,
     breaks: false,
     gfm: true,
