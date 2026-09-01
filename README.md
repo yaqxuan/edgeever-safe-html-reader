@@ -11,13 +11,13 @@ It is designed for bilingual close reading:
 
 ## EdgeEver API contract
 
-The implementation was verified against EdgeEver Plugin API v1 at official commit `609a589ebbeb0ed0182fe4f73cdf885b4ed62b74` (2026-09-01).
+The implementation supports both the EdgeEver v1.51.1 Plugin API at official commit `c22437e09dc5f54d6c71896b48a808833615f45e` and the expanded Plugin API v1 at official commit `609a589ebbeb0ed0182fe4f73cdf885b4ed62b74` (2026-09-01).
 
 It uses only these official capabilities:
 
 - `context.commands.register()`
-- `context.ui.panels.register()` and `context.ui.panels.open()`
-- `context.editor.getDocument()` for the live Markdown, including unsaved editor changes
+- `context.ui.panels.register()` on all supported versions and `context.ui.panels.open()` when available
+- `context.editor.getSelection()` on EdgeEver v1.51.1 or `context.editor.getDocument()` on newer builds for the live Markdown
 - `context.notes.get()` for the saved note title
 - `context.ui.showNotice()` for a missing active note
 
@@ -33,7 +33,7 @@ ui:panels
 
 It has no note-write, delete, network, storage, or secret permission.
 
-The current EdgeEver API does not expose custom TipTap/ProseMirror marks or nodes, a per-plugin toolbar button, or an active-note-changed event. Safe HTML Reader therefore leaves the editor untouched, uses the official unified plugin command/panel entry, and checks the live document at a low frequency only while its panel is open. It reparses only when the note or Markdown changes.
+The current EdgeEver API does not expose custom TipTap/ProseMirror marks or nodes, a per-plugin toolbar button, or an active-note-changed event. Safe HTML Reader therefore leaves the editor untouched, uses the official unified plugin panel entry, and checks the live document at a low frequency only while its panel is open. Newer EdgeEver builds also show a command that opens the panel directly. It reparses only when the note or Markdown changes.
 
 The official `@edgeever/plugin-api` package exists in the EdgeEver monorepo but was not published to npm when version 1.0.0 was built. This project keeps a minimal, type-only declaration of the APIs it actually calls, so the release bundle has no unresolved runtime SDK import.
 
@@ -98,7 +98,7 @@ The same three files are kept at the repository root so EdgeEver can also instal
 
 ### 4. Create a GitHub Release
 
-Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.0` or `v1.0.0`, and upload these three files as separate release assets:
+Push the repository to a **public** GitHub repository. Keep the latest `manifest.json` at the repository root. Create a release whose tag matches the manifest version, either `1.0.1` or `v1.0.1`, and upload these three files as separate release assets:
 
 ```text
 dist/manifest.json  -> manifest.json
@@ -109,11 +109,11 @@ dist/styles.css     -> styles.css
 With GitHub CLI:
 
 ```sh
-gh release create v1.0.0 \
+gh release create v1.0.1 \
   dist/manifest.json \
   dist/main.js \
   dist/styles.css \
-  --title "Safe HTML Reader v1.0.0" \
+  --title "Safe HTML Reader v1.0.1" \
   --notes-file RELEASE.md
 ```
 

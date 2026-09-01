@@ -1,4 +1,8 @@
-import type { EdgeEverEditorDocument, EdgeEverPluginContext } from "./edgeever-api";
+import {
+  getCurrentEditorDocument,
+  type EdgeEverEditorDocument,
+  type EdgeEverPluginContext,
+} from "./edgeever-api";
 import { renderReadingView, type RenderedReadingView } from "./renderer";
 
 const AUTO_REFRESH_INTERVAL_MS = 1_500;
@@ -75,7 +79,7 @@ export class SafeHtmlReaderPanel {
     let sequence = this.renderSequence;
     let renderStarted = false;
     try {
-      const document = await this.context.editor.getDocument();
+      const document = await getCurrentEditorDocument(this.context);
       if (this.disposed) return;
       if (!document) {
         if (force || this.lastDocument) this.showEmptyState();
@@ -97,9 +101,11 @@ export class SafeHtmlReaderPanel {
       if (this.disposed || sequence !== this.renderSequence) return;
       this.lastDocument = { ...snapshot.document };
       this.title.textContent = snapshot.title;
-      this.status.textContent = snapshot.document.hasUnsavedChanges
+      this.status.textContent = snapshot.document.hasUnsavedChanges === true
         ? "正在显示当前编辑器内容（包含尚未保存的修改）"
-        : "正在显示当前笔记的最新 Markdown";
+        : snapshot.document.hasUnsavedChanges === false
+          ? "正在显示当前笔记的最新 Markdown"
+          : "正在显示当前编辑器 Markdown";
       this.errorState.hidden = true;
       this.emptyState.hidden = true;
       this.article.hidden = false;

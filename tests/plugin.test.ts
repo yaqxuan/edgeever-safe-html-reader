@@ -7,7 +7,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const createContext = (hasDocument = true) => {
+const createContext = (hasDocument = true, legacy = false) => {
   let panel: EdgeEverPanel | null = null;
   let command: { id: string; title: string; run(): void | Promise<void> } | null = null;
   const notices: string[] = [];
@@ -16,11 +16,17 @@ const createContext = (hasDocument = true) => {
     notes: {
       get: vi.fn(async () => ({ id: "note-1", title: "Example", contentMarkdown: "Saved" })),
     },
-    editor: {
-      getDocument: vi.fn(async () => hasDocument
-        ? { noteId: "note-1", contentMarkdown: "# Live\n\n<mark>Current</mark>", hasUnsavedChanges: true }
-        : null),
-    },
+    editor: legacy
+      ? {
+          getSelection: vi.fn(async () => hasDocument
+            ? { noteId: "note-1", contentMarkdown: "# Legacy Live\n\n<mark>Current</mark>" }
+            : null),
+        }
+      : {
+          getDocument: vi.fn(async () => hasDocument
+            ? { noteId: "note-1", contentMarkdown: "# Live\n\n<mark>Current</mark>", hasUnsavedChanges: true }
+            : null),
+        },
     commands: {
       register: vi.fn((value) => {
         command = value;
@@ -34,7 +40,7 @@ const createContext = (hasDocument = true) => {
           panel = value;
           return vi.fn();
         }),
-        open: vi.fn(async () => undefined),
+        open: legacy ? undefined : vi.fn(async () => undefined),
       },
     },
   };
@@ -83,5 +89,23 @@ describe("Safe HTML Reader plugin", () => {
     expect(harness.notices[0]).toContain("请先打开一篇笔记");
     expect(harness.context.ui.panels.open).toHaveBeenCalled();
     if (typeof dispose === "function") dispose();
+  });
+
+  it("supports EdgeEver v1.51.1 through getSelection and the panel menu", async () => {
+    const harness = createContext(true, true);
+    const disposePlugin = await createSafeHtmlReaderPlugin().activate(harness.context);
+    expect(harness.getCommand()).toBeNull();
+
+    const container = document.createElement("div");
+    document.body.append(container);
+    const disposePanel = await harness.getPanel()?.mount(container);
+
+    await vi.waitFor(() => {
+      expect(container.querySelector("h1")?.textContent).toBe("Legacy Live");
+      expect(container.textContent).toContain("正在显示当前编辑器 Markdown");
+    });
+
+    if (typeof disposePanel === "function") disposePanel();
+    if (typeof disposePlugin === "function") disposePlugin();
   });
 });

@@ -1,10 +1,11 @@
-# Safe HTML Reader v1.0.0
+# Safe HTML Reader v1.0.1
 
-First stable release of Safe HTML Reader for EdgeEver Plugin API v1.
+Compatibility fix for EdgeEver v1.51.1 while retaining support for newer Plugin API v1 builds.
 
 ## Highlights
 
-- Adds the **Open Safe HTML Reading View** command and a focused reading panel.
+- Reads the live Markdown through `getSelection()` on EdgeEver v1.51.1 and `getDocument()` on newer builds.
+- Uses the panel menu directly on v1.51.1 and keeps the **Open Safe HTML Reading View** command where programmatic panel opening is supported.
 - Renders standard Markdown plus a strict allowlist of portable HTML.
 - Provides accessible hover, keyboard-focus, and tap tooltips for `<abbr title="…">` vocabulary.
 - Displays `<sup>[n]</sup>` as academic-style references with preview and jump-to-note behavior.
@@ -21,7 +22,7 @@ Upload the following files from `dist/` as separate GitHub Release assets:
 - `main.js`
 - `styles.css`
 
-The release tag must be `1.0.0` or `v1.0.0`. The release manifest must exactly match the `manifest.json` on the repository default branch.
+The release tag must be `1.0.1` or `v1.0.1`. The release manifest must exactly match the `manifest.json` on the repository default branch.
 
 ## Validation
 

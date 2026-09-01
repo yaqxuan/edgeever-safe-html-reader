@@ -12,7 +12,12 @@
 export interface EdgeEverEditorDocument {
   noteId: string;
   contentMarkdown: string;
-  hasUnsavedChanges: boolean;
+  hasUnsavedChanges?: boolean;
+}
+
+export interface EdgeEverEditorSelection {
+  noteId: string;
+  contentMarkdown: string;
 }
 
 export interface EdgeEverNote {
@@ -33,7 +38,8 @@ export interface EdgeEverPluginContext {
     get(noteId: string): Promise<EdgeEverNote>;
   };
   editor: {
-    getDocument(): Promise<EdgeEverEditorDocument | null>;
+    getDocument?(): Promise<EdgeEverEditorDocument | null>;
+    getSelection?(): Promise<EdgeEverEditorSelection | null>;
   };
   commands: {
     register(command: {
@@ -46,10 +52,25 @@ export interface EdgeEverPluginContext {
     showNotice(message: string): void;
     panels: {
       register(panel: EdgeEverPanel): () => void;
-      open(panelId: string): Promise<void>;
+      open?(panelId: string): Promise<void>;
     };
   };
 }
+
+export const getCurrentEditorDocument = async (
+  context: EdgeEverPluginContext,
+): Promise<EdgeEverEditorDocument | null> => {
+  if (typeof context.editor.getDocument === "function") {
+    return context.editor.getDocument();
+  }
+  if (typeof context.editor.getSelection === "function") {
+    const selection = await context.editor.getSelection();
+    return selection
+      ? { noteId: selection.noteId, contentMarkdown: selection.contentMarkdown }
+      : null;
+  }
+  throw new Error("当前 EdgeEver 版本没有提供可读取笔记内容的编辑器接口。");
+};
 
 export interface EdgeEverPlugin {
   activate(context: EdgeEverPluginContext): void | (() => void) | Promise<void | (() => void)>;

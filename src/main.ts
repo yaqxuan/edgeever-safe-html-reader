@@ -1,4 +1,8 @@
-import type { EdgeEverPlugin, EdgeEverPluginContext } from "./edgeever-api";
+import {
+  getCurrentEditorDocument,
+  type EdgeEverPlugin,
+  type EdgeEverPluginContext,
+} from "./edgeever-api";
 import { SafeHtmlReaderPanel } from "./panel";
 
 const PANEL_ID = "safe-html-reading-view";
@@ -22,16 +26,18 @@ export const createSafeHtmlReaderPlugin = (): EdgeEverPlugin => ({
       },
     });
 
-    const disposeCommand = context.commands.register({
-      id: COMMAND_ID,
-      title: "Open Safe HTML Reading View",
-      async run() {
-        const document = await context.editor.getDocument();
-        if (!document) context.ui.showNotice("请先打开一篇笔记，再进入阅读模式。");
-        await context.ui.panels.open(PANEL_ID);
-        await activePanel?.refresh(true);
-      },
-    });
+    const disposeCommand = typeof context.ui.panels.open === "function"
+      ? context.commands.register({
+          id: COMMAND_ID,
+          title: "Open Safe HTML Reading View",
+          async run() {
+            const document = await getCurrentEditorDocument(context);
+            if (!document) context.ui.showNotice("请先打开一篇笔记，再进入阅读模式。");
+            await context.ui.panels.open?.(PANEL_ID);
+            await activePanel?.refresh(true);
+          },
+        })
+      : () => undefined;
 
     return () => {
       activePanel?.dispose();
